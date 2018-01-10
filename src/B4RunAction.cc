@@ -30,6 +30,7 @@
 
 #include "B4RunAction.hh"
 #include "B4Analysis.hh"
+#include "B4cEventAction.hh"
 
 #include "G4Run.hh"
 #include "G4RunManager.hh"
@@ -43,6 +44,12 @@ B4RunAction::B4RunAction()
 { 
   // set printing event number per each event
   G4RunManager::GetRunManager()->SetPrintProgress(1);     
+
+  const B4cEventAction* constEventAction
+        = static_cast<const B4cEventAction*>(G4RunManager::GetRunManager()
+                      ->GetUserEventAction());
+  B4cEventAction* eventAction
+          = const_cast<B4cEventAction*>(constEventAction);
 
   // Create analysis manager
   // The choice of analysis technology is done via selectin of a namespace
@@ -73,6 +80,10 @@ B4RunAction::B4RunAction()
   analysisManager->CreateNtupleDColumn("Egap");
   analysisManager->CreateNtupleDColumn("Labs");
   analysisManager->CreateNtupleDColumn("Lgap");
+  analysisManager->CreateNtupleDColumn("EabsVec",eventAction->GetAbsEdepVec());
+  analysisManager->CreateNtupleDColumn("EgapVec",eventAction->GetGapEdepVec());
+  analysisManager->CreateNtupleDColumn("LabsVec",eventAction->GetAbsTrackLengthVec());
+  analysisManager->CreateNtupleDColumn("LgapVec",eventAction->GetGapTrackLengthVec());
   analysisManager->FinishNtuple();
 }
 

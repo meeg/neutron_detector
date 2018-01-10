@@ -51,6 +51,10 @@ public:
 
   virtual void  BeginOfEventAction(const G4Event* event);
   virtual void    EndOfEventAction(const G4Event* event);
+  std::vector<G4double>& GetAbsEdepVec() { return fAbsEdepVec; }
+  std::vector<G4double>& GetGapEdepVec() { return fGapEdepVec; }
+  std::vector<G4double>& GetAbsTrackLengthVec() { return fAbsTrackLengthVec; }
+  std::vector<G4double>& GetGapTrackLengthVec() { return fGapTrackLengthVec; }
     
 private:
   // methods
@@ -62,6 +66,10 @@ private:
   // data members                   
   G4int  fAbsHCID;
   G4int  fGapHCID;
+  std::vector<G4double>  fAbsEdepVec;
+  std::vector<G4double>  fGapEdepVec;
+  std::vector<G4double>  fAbsTrackLengthVec;
+  std::vector<G4double>  fGapTrackLengthVec;
 };
                      
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -128,12 +128,25 @@ void B4cEventAction::EndOfEventAction(const G4Event* event)
     G4cout << "---> End of event: " << eventID << G4endl;     
 
     PrintEventStatistics(
-      absoHit->GetEdep(), absoHit->GetTrackLength(),
-      gapHit->GetEdep(), gapHit->GetTrackLength());
+      absoHit->GetEdep(), absoHit->GetTrackLength() / absoHit->GetEdep(),
+      gapHit->GetEdep(), gapHit->GetTrackLength() / gapHit->GetEdep());
   }  
   
   // Fill histograms, ntuple
   //
+  fAbsEdepVec.clear();
+  fGapEdepVec.clear();
+  fAbsTrackLengthVec.clear();
+  fGapTrackLengthVec.clear();
+
+  for (int i=0;i<absoHC->entries();i++) {
+      fAbsEdepVec.push_back((*absoHC)[i]->GetEdep());
+      fAbsTrackLengthVec.push_back((*absoHC)[i]->GetTrackLength() / (*absoHC)[i]->GetEdep());
+  }
+  for (int i=0;i<gapHC->entries();i++) {
+      fGapEdepVec.push_back((*gapHC)[i]->GetEdep());
+      fGapTrackLengthVec.push_back((*gapHC)[i]->GetTrackLength() / (*gapHC)[i]->GetEdep());
+  }
 
   // get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
@@ -141,14 +154,14 @@ void B4cEventAction::EndOfEventAction(const G4Event* event)
   // fill histograms
   analysisManager->FillH1(0, absoHit->GetEdep());
   analysisManager->FillH1(1, gapHit->GetEdep());
-  analysisManager->FillH1(2, absoHit->GetTrackLength());
-  analysisManager->FillH1(3, gapHit->GetTrackLength());
+  analysisManager->FillH1(2, absoHit->GetTrackLength() / absoHit->GetEdep());
+  analysisManager->FillH1(3, gapHit->GetTrackLength() / gapHit->GetEdep());
   
   // fill ntuple
   analysisManager->FillNtupleDColumn(0, absoHit->GetEdep());
   analysisManager->FillNtupleDColumn(1, gapHit->GetEdep());
-  analysisManager->FillNtupleDColumn(2, absoHit->GetTrackLength());
-  analysisManager->FillNtupleDColumn(3, gapHit->GetTrackLength());
+  analysisManager->FillNtupleDColumn(2, absoHit->GetTrackLength() / absoHit->GetEdep());
+  analysisManager->FillNtupleDColumn(3, gapHit->GetTrackLength() / gapHit->GetEdep());
   analysisManager->AddNtupleRow();  
 }  
 

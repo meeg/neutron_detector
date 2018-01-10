@@ -86,12 +86,15 @@ G4bool B4cCalorimeterSD::ProcessHits(G4Step* step,
 {  
   // energy deposit
   auto edep = step->GetTotalEnergyDeposit();
-  
+
+  auto zposition = step->GetPreStepPoint()->GetPosition().z();
+
   // step length
-  G4double stepLength = 0.;
+  G4double stepLength = edep*zposition;
+  /*
   if ( step->GetTrack()->GetDefinition()->GetPDGCharge() != 0. ) {
     stepLength = step->GetStepLength();
-  }
+  }*/
 
   if ( edep==0. && stepLength == 0. ) return false;      
 

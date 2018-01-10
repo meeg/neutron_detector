@@ -40,10 +40,14 @@
 B4cCalorimeterSD::B4cCalorimeterSD(
                             const G4String& name, 
                             const G4String& hitsCollectionName,
-                            G4int nofCells)
+                            G4int baseDepth,
+                            G4int nofRows,
+                            G4int nofCols)
  : G4VSensitiveDetector(name),
    fHitsCollection(nullptr),
-   fNofCells(nofCells)
+   fBaseDepth(baseDepth),
+   fNofRows(nofRows),
+   fNofCols(nofCols)
 {
   collectionName.insert(hitsCollectionName);
 }
@@ -58,6 +62,7 @@ B4cCalorimeterSD::~B4cCalorimeterSD()
 
 void B4cCalorimeterSD::Initialize(G4HCofThisEvent* hce)
 {
+  fNofCells = fNofRows * fNofCols;
   // Create hits collection
   fHitsCollection 
     = new B4cCalorHitsCollection(SensitiveDetectorName, collectionName[0]); 
@@ -93,7 +98,11 @@ G4bool B4cCalorimeterSD::ProcessHits(G4Step* step,
   auto touchable = (step->GetPreStepPoint()->GetTouchable());
     
   // Get calorimeter cell id 
-  auto layerNumber = touchable->GetReplicaNumber(1);
+  auto rowNumber = touchable->GetReplicaNumber(fBaseDepth);
+  auto colNumber = touchable->GetReplicaNumber(fBaseDepth+1);
+  auto layerNumber = rowNumber + fNofRows * colNumber;
+  //debug
+  //G4cout << SensitiveDetectorName << " row " << rowNumber << " col " << colNumber << " layer " << layerNumber << G4endl;
   
   // Get hit accounting data for this cell
   auto hit = (*fHitsCollection)[layerNumber];

@@ -58,7 +58,8 @@ G4GlobalMagFieldMessenger* B4cDetectorConstruction::fMagFieldMessenger = 0;
 B4cDetectorConstruction::B4cDetectorConstruction()
  : G4VUserDetectorConstruction(),
    fCheckOverlaps(true),
-   fNofLayers(-1)
+   fNofRows(-1),
+   fNofCols(-1)
 {
 }
 
@@ -107,15 +108,21 @@ void B4cDetectorConstruction::DefineMaterials()
 G4VPhysicalVolume* B4cDetectorConstruction::DefineVolumes()
 {
   // Geometry parameters
-  fNofLayers = 10;
-  G4double absoThickness = 10.*mm;
-  G4double gapThickness =  5.*mm;
-  G4double calorSizeXY  = 10.*cm;
+  fNofRows = 10;
+  fNofCols = 10;
+  //G4double absoThickness = 10.*mm;
+  //G4double gapThickness =  5.*mm;
+  G4double fiberSizeXY  = 1.*mm;
+  G4double coreSizeXY  = 0.8*mm;
+  G4double calorSizeX  = fiberSizeXY * fNofCols ;
+  G4double calorSizeY  = fiberSizeXY * fNofRows ;
+  G4double calorSizeZ  = 10.*cm;
 
-  auto layerThickness = absoThickness + gapThickness;
-  auto calorThickness = fNofLayers * layerThickness;
-  auto worldSizeXY = 1.2 * calorSizeXY;
-  auto worldSizeZ  = 1.2 * calorThickness; 
+  //auto layerThickness = absoThickness + gapThickness;
+  //auto calorThickness = fNofLayers * layerThickness;
+  auto worldSizeX = 1.2 * calorSizeX;
+  auto worldSizeY = 1.2 * calorSizeY;
+  auto worldSizeZ  = 1.2 * calorSizeZ; 
   
   // Get materials
   auto defaultMaterial = G4Material::GetMaterial("Galactic");
@@ -134,7 +141,7 @@ G4VPhysicalVolume* B4cDetectorConstruction::DefineVolumes()
   //
   auto worldS 
     = new G4Box("World",           // its name
-                 worldSizeXY/2, worldSizeXY/2, worldSizeZ/2); // its size
+                 worldSizeX/2, worldSizeY/2, worldSizeZ/2); // its size
                          
   auto worldLV
     = new G4LogicalVolume(
@@ -158,7 +165,7 @@ G4VPhysicalVolume* B4cDetectorConstruction::DefineVolumes()
   //  
   auto calorimeterS
     = new G4Box("Calorimeter",     // its name
-                 calorSizeXY/2, calorSizeXY/2, calorThickness/2); // its size
+                 calorSizeX/2, calorSizeY/2, calorSizeZ/2); // its size
                          
   auto calorLV
     = new G4LogicalVolume(
@@ -177,11 +184,32 @@ G4VPhysicalVolume* B4cDetectorConstruction::DefineVolumes()
                  fCheckOverlaps);  // checking overlaps 
    
   //                                 
+  // Column
+  //
+  auto columnS 
+    = new G4Box("Column",           // its name
+                 fiberSizeXY/2, calorSizeY/2, calorSizeZ/2); //its size
+                         
+  auto columnLV
+    = new G4LogicalVolume(
+                 columnS,           // its solid
+                 defaultMaterial,  // its material
+                 "Column");         // its name
+
+  new G4PVReplica(
+                 "Column",          // its name
+                 columnLV,          // its logical volume
+                 calorLV,          // its mother
+                 kXAxis,           // axis of replication
+                 fNofCols,        // number of replica
+                 fiberSizeXY);  // witdth of replica
+
+  //                                 
   // Layer
   //
   auto layerS 
     = new G4Box("Layer",           // its name
-                 calorSizeXY/2, calorSizeXY/2, layerThickness/2); //its size
+                 fiberSizeXY/2, fiberSizeXY/2, calorSizeZ/2); //its size
                          
   auto layerLV
     = new G4LogicalVolume(
@@ -192,17 +220,17 @@ G4VPhysicalVolume* B4cDetectorConstruction::DefineVolumes()
   new G4PVReplica(
                  "Layer",          // its name
                  layerLV,          // its logical volume
-                 calorLV,          // its mother
-                 kZAxis,           // axis of replication
-                 fNofLayers,        // number of replica
-                 layerThickness);  // witdth of replica
+                 columnLV,          // its mother
+                 kYAxis,           // axis of replication
+                 fNofRows,        // number of replica
+                 fiberSizeXY);  // witdth of replica
   
   //                               
   // Absorber
   //
   auto absorberS 
     = new G4Box("Abso",            // its name
-                 calorSizeXY/2, calorSizeXY/2, absoThickness/2); // its size
+                 fiberSizeXY/2, fiberSizeXY/2, calorSizeZ/2); //its size
                          
   auto absorberLV
     = new G4LogicalVolume(
@@ -212,7 +240,7 @@ G4VPhysicalVolume* B4cDetectorConstruction::DefineVolumes()
                                    
    new G4PVPlacement(
                  0,                // no rotation
-                 G4ThreeVector(0., 0., -gapThickness/2), // its position
+                 G4ThreeVector(0., 0., 0.), // its position
                  absorberLV,       // its logical volume                         
                  "Abso",           // its name
                  layerLV,          // its mother  volume
@@ -225,7 +253,7 @@ G4VPhysicalVolume* B4cDetectorConstruction::DefineVolumes()
   //
   auto gapS 
     = new G4Box("Gap",             // its name
-                 calorSizeXY/2, calorSizeXY/2, gapThickness/2); // its size
+                 coreSizeXY/2, coreSizeXY/2, calorSizeZ/2); //its size
                          
   auto gapLV
     = new G4LogicalVolume(
@@ -235,10 +263,10 @@ G4VPhysicalVolume* B4cDetectorConstruction::DefineVolumes()
                                    
   new G4PVPlacement(
                  0,                // no rotation
-                 G4ThreeVector(0., 0., absoThickness/2), // its position
+                 G4ThreeVector(0., 0., 0.), // its position
                  gapLV,            // its logical volume                         
                  "Gap",            // its name
-                 layerLV,          // its mother  volume
+                 absorberLV,          // its mother  volume
                  false,            // no boolean operation
                  0,                // copy number
                  fCheckOverlaps);  // checking overlaps 
@@ -249,10 +277,10 @@ G4VPhysicalVolume* B4cDetectorConstruction::DefineVolumes()
   G4cout
     << G4endl 
     << "------------------------------------------------------------" << G4endl
-    << "---> The calorimeter is " << fNofLayers << " layers of: [ "
-    << absoThickness/mm << "mm of " << absorberMaterial->GetName() 
+    << "---> The calorimeter is " << fNofRows << " rows and " << fNofCols << " columns of fibers: [ "
+    << fiberSizeXY/mm << "mm overall dimension, cladding material " << absorberMaterial->GetName() 
     << " + "
-    << gapThickness/mm << "mm of " << gapMaterial->GetName() << " ] " << G4endl
+    << coreSizeXY/mm << "mm core dimension, core material " << gapMaterial->GetName() << " ] " << G4endl
     << "------------------------------------------------------------" << G4endl;
   
   //                                        
@@ -280,12 +308,12 @@ void B4cDetectorConstruction::ConstructSDandField()
   // Sensitive detectors
   //
   auto absoSD 
-    = new B4cCalorimeterSD("AbsorberSD", "AbsorberHitsCollection", fNofLayers);
+    = new B4cCalorimeterSD("AbsorberSD", "AbsorberHitsCollection", 1, fNofRows, fNofCols);
   G4SDManager::GetSDMpointer()->AddNewDetector(absoSD);
   SetSensitiveDetector("AbsoLV",absoSD);
 
   auto gapSD 
-    = new B4cCalorimeterSD("GapSD", "GapHitsCollection", fNofLayers);
+    = new B4cCalorimeterSD("GapSD", "GapHitsCollection", 2, fNofRows, fNofCols);
   G4SDManager::GetSDMpointer()->AddNewDetector(gapSD);
   SetSensitiveDetector("GapLV",gapSD);
 

@@ -54,7 +54,7 @@ B4RunAction::B4RunAction()
   //analysisManager->SetHistoDirectoryName("histograms");
   //analysisManager->SetNtupleDirectoryName("ntuple");
   analysisManager->SetVerboseLevel(1);
-  analysisManager->SetNtupleMerging(true);
+  //analysisManager->SetNtupleMerging(true); //comment out, doesn't work with geant4.10.02.p02
     // Note: merging ntuples is available only with Root output
 
   // Book histograms, ntuple

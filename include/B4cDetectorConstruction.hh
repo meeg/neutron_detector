@@ -75,7 +75,8 @@ class B4cDetectorConstruction : public G4VUserDetectorConstruction
                                       // magnetic field messenger
 
     G4bool  fCheckOverlaps; // option to activate checking of volumes overlaps
-    G4int   fNofLayers;     // number of layers
+    G4int   fNofRows;     // number of layers
+    G4int   fNofCols;     // number of columns
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

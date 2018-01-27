@@ -97,9 +97,11 @@ void B4PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       "MyCode0002", JustWarning, msg);
   } 
   
+  G4double originX = (2*G4UniformRand()-1)*mm;
+  G4double originY = (2*G4UniformRand()-1)*mm;
   // Set gun position
   fParticleGun
-    ->SetParticlePosition(G4ThreeVector(0., 0., -worldZHalfLength));
+    ->SetParticlePosition(G4ThreeVector(originX, originY, -worldZHalfLength));
 
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }

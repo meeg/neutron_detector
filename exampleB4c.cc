@@ -39,7 +39,7 @@
 
 #include "G4UImanager.hh"
 #include "G4UIcommand.hh"
-#include "FTFP_BERT.hh"
+#include "QGSP_BERT_HP.hh"
 
 #include "Randomize.hh"
 
@@ -114,7 +114,7 @@ int main(int argc,char** argv)
   auto detConstruction = new B4cDetectorConstruction();
   runManager->SetUserInitialization(detConstruction);
 
-  auto physicsList = new FTFP_BERT;
+  auto physicsList = new QGSP_BERT_HP;
   runManager->SetUserInitialization(physicsList);
     
   auto actionInitialization = new B4cActionInitialization();

@@ -86,13 +86,14 @@ void B4cDetectorConstruction::DefineMaterials()
 { 
   // Lead material defined using NIST Manager
   auto nistManager = G4NistManager::Instance();
-  nistManager->FindOrBuildMaterial("G4_Pb");
+  nistManager->FindOrBuildMaterial("G4_LUCITE");
+  nistManager->FindOrBuildMaterial("G4_POLYSTYRENE");
   
   // Liquid argon material
   G4double a;  // mass of a mole;
   G4double z;  // z=mean number of protons;  
   G4double density; 
-  new G4Material("liquidArgon", z=18., a= 39.95*g/mole, density= 1.390*g/cm3);
+  //new G4Material("liquidArgon", z=18., a= 39.95*g/mole, density= 1.390*g/cm3);
          // The argon by NIST Manager is a gas with a different density
 
   // Vacuum
@@ -108,12 +109,12 @@ void B4cDetectorConstruction::DefineMaterials()
 G4VPhysicalVolume* B4cDetectorConstruction::DefineVolumes()
 {
   // Geometry parameters
-  fNofRows = 10;
-  fNofCols = 10;
+  fNofRows = 100;
+  fNofCols = 100;
   //G4double absoThickness = 10.*mm;
   //G4double gapThickness =  5.*mm;
-  G4double fiberSizeXY  = 1.*mm;
-  G4double coreSizeXY  = 0.8*mm;
+  G4double fiberSizeXY  = 0.25*mm;
+  G4double coreSizeXY  = 0.23*mm;
   G4double calorSizeX  = fiberSizeXY * fNofCols ;
   G4double calorSizeY  = fiberSizeXY * fNofRows ;
   G4double calorSizeZ  = 10.*cm;
@@ -126,9 +127,10 @@ G4VPhysicalVolume* B4cDetectorConstruction::DefineVolumes()
   
   // Get materials
   auto defaultMaterial = G4Material::GetMaterial("Galactic");
-  auto absorberMaterial = G4Material::GetMaterial("G4_Pb");
-  auto gapMaterial = G4Material::GetMaterial("liquidArgon");
+  auto absorberMaterial = G4Material::GetMaterial("G4_LUCITE");
+  auto gapMaterial = G4Material::GetMaterial("G4_POLYSTYRENE");
   
+
   if ( ! defaultMaterial || ! absorberMaterial || ! gapMaterial ) {
     G4ExceptionDescription msg;
     msg << "Cannot retrieve materials already defined."; 

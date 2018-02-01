@@ -90,13 +90,13 @@ G4bool CalorimeterSD::ProcessHits(G4Step* step,
   auto zposition = step->GetPreStepPoint()->GetPosition().z();
 
   // step length
-  G4double stepLength = edep*zposition;
+  G4double weightedZ = edep*zposition;
   /*
   if ( step->GetTrack()->GetDefinition()->GetPDGCharge() != 0. ) {
     stepLength = step->GetStepLength();
   }*/
 
-  if ( edep==0. && stepLength == 0. ) return false;      
+  if ( edep==0. && weightedZ == 0. ) return false;      
 
   auto touchable = (step->GetPreStepPoint()->GetTouchable());
     
@@ -121,8 +121,8 @@ G4bool CalorimeterSD::ProcessHits(G4Step* step,
     = (*fHitsCollection)[fHitsCollection->entries()-1];
   
   // Add values
-  hit->Add(edep, stepLength);
-  hitTotal->Add(edep, stepLength); 
+  hit->Add(edep, weightedZ);
+  hitTotal->Add(edep, weightedZ); 
       
   return true;
 }

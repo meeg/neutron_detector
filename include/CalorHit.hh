@@ -41,7 +41,7 @@
 ///
 /// It defines data members to store the the energy deposit and track lengths
 /// of charged particles in a selected volume:
-/// - fEdep, fTrackLength
+/// - fEdep, fWeightedZ
 
 class CalorHit : public G4VHit
 {
@@ -66,11 +66,11 @@ class CalorHit : public G4VHit
 
     // get methods
     G4double GetEdep() const;
-    G4double GetTrackLength() const;
+    G4double GetWeightedZ() const;
       
   private:
     G4double fEdep;        ///< Energy deposit in the sensitive volume
-    G4double fTrackLength; ///< Track length in the  sensitive volume
+    G4double fWeightedZ; ///< Energy-weighted Z in the  sensitive volume
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -101,15 +101,15 @@ inline void CalorHit::operator delete(void *hit)
 
 inline void CalorHit::Add(G4double de, G4double dl) {
   fEdep += de; 
-  fTrackLength += dl;
+  fWeightedZ += dl;
 }
 
 inline G4double CalorHit::GetEdep() const { 
   return fEdep; 
 }
 
-inline G4double CalorHit::GetTrackLength() const { 
-  return fTrackLength; 
+inline G4double CalorHit::GetWeightedZ() const { 
+  return fWeightedZ; 
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

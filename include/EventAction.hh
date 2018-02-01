@@ -53,23 +53,23 @@ public:
   virtual void    EndOfEventAction(const G4Event* event);
   std::vector<G4double>& GetCladEdepVec() { return fCladEdepVec; }
   std::vector<G4double>& GetCoreEdepVec() { return fCoreEdepVec; }
-  std::vector<G4double>& GetCladTrackLengthVec() { return fCladTrackLengthVec; }
-  std::vector<G4double>& GetCoreTrackLengthVec() { return fCoreTrackLengthVec; }
+  std::vector<G4double>& GetCladZVec() { return fCladZVec; }
+  std::vector<G4double>& GetCoreZVec() { return fCoreZVec; }
     
 private:
   // methods
   CalorHitsCollection* GetHitsCollection(G4int hcID,
                                             const G4Event* event) const;
-  void PrintEventStatistics(G4double cladEdep, G4double cladTrackLength,
-                            G4double coreEdep, G4double coreTrackLength) const;
+  void PrintEventStatistics(G4double cladEdep, G4double cladZ,
+                            G4double coreEdep, G4double coreZ) const;
   
   // data members                   
   G4int  fCladHCID;
   G4int  fCoreHCID;
   std::vector<G4double>  fCladEdepVec;
   std::vector<G4double>  fCoreEdepVec;
-  std::vector<G4double>  fCladTrackLengthVec;
-  std::vector<G4double>  fCoreTrackLengthVec;
+  std::vector<G4double>  fCladZVec;
+  std::vector<G4double>  fCoreZVec;
 };
                      
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

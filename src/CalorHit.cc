@@ -44,7 +44,7 @@ G4ThreadLocal G4Allocator<CalorHit>* CalorHitAllocator = 0;
 CalorHit::CalorHit()
  : G4VHit(),
    fEdep(0.),
-   fTrackLength(0.)
+   fWeightedZ(0.)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -57,7 +57,7 @@ CalorHit::CalorHit(const CalorHit& right)
   : G4VHit()
 {
   fEdep        = right.fEdep;
-  fTrackLength = right.fTrackLength;
+  fWeightedZ = right.fWeightedZ;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -65,7 +65,7 @@ CalorHit::CalorHit(const CalorHit& right)
 const CalorHit& CalorHit::operator=(const CalorHit& right)
 {
   fEdep        = right.fEdep;
-  fTrackLength = right.fTrackLength;
+  fWeightedZ = right.fWeightedZ;
 
   return *this;
 }
@@ -84,8 +84,8 @@ void CalorHit::Print()
   G4cout
      << "Edep: " 
      << std::setw(7) << G4BestUnit(fEdep,"Energy")
-     << " track length: " 
-     << std::setw(7) << G4BestUnit( fTrackLength,"Length")
+     << " Z: " 
+     << std::setw(7) << G4BestUnit( fWeightedZ/fEdep,"Length")
      << G4endl;
 }
 

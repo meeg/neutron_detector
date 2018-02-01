@@ -68,22 +68,22 @@ RunAction::RunAction()
   //
   
   // Creating histograms
-  analysisManager->CreateH1("Eclad","Edep in cladding", 100, 0., 800*MeV);
-  analysisManager->CreateH1("Ecore","Edep in core", 100, 0., 100*MeV);
-  analysisManager->CreateH1("Lclad","trackL in cladding", 100, 0., 1*m);
-  analysisManager->CreateH1("Lcore","trackL in core", 100, 0., 50*cm);
+  analysisManager->CreateH1("Eclad","Edep in cladding", 100, 0., 10*MeV);
+  analysisManager->CreateH1("Ecore","Edep in core", 100, 0., 10*MeV);
+  analysisManager->CreateH1("Zclad","Z in cladding", 100, 0., 50*cm);
+  analysisManager->CreateH1("Zcore","Z in core", 100, 0., 50*cm);
 
   // Creating ntuple
   //
-  analysisManager->CreateNtuple("B4", "Edep and TrackL");
+  analysisManager->CreateNtuple("B4", "Edep and Z");
   analysisManager->CreateNtupleDColumn("Eclad");
   analysisManager->CreateNtupleDColumn("Ecore");
-  analysisManager->CreateNtupleDColumn("Lclad");
-  analysisManager->CreateNtupleDColumn("Lcore");
+  analysisManager->CreateNtupleDColumn("Zclad");
+  analysisManager->CreateNtupleDColumn("Zcore");
   analysisManager->CreateNtupleDColumn("EcladVec",eventAction->GetCladEdepVec());
   analysisManager->CreateNtupleDColumn("EcoreVec",eventAction->GetCoreEdepVec());
-  analysisManager->CreateNtupleDColumn("LcladVec",eventAction->GetCladTrackLengthVec());
-  analysisManager->CreateNtupleDColumn("LcoreVec",eventAction->GetCoreTrackLengthVec());
+  analysisManager->CreateNtupleDColumn("ZcladVec",eventAction->GetCladZVec());
+  analysisManager->CreateNtupleDColumn("ZcoreVec",eventAction->GetCoreZVec());
   analysisManager->FinishNtuple();
 }
 

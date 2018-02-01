@@ -78,20 +78,20 @@ EventAction::GetHitsCollection(G4int hcID,
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void EventAction::PrintEventStatistics(
-                              G4double cladEdep, G4double cladTrackLength,
-                              G4double coreEdep, G4double coreTrackLength) const
+                              G4double cladEdep, G4double cladZ,
+                              G4double coreEdep, G4double coreZ) const
 {
   // print event statistics
   G4cout
      << "   Cladding: total energy: " 
      << std::setw(7) << G4BestUnit(cladEdep, "Energy")
-     << "       total track length: " 
-     << std::setw(7) << G4BestUnit(cladTrackLength, "Length")
+     << "       weighted Z: " 
+     << std::setw(7) << G4BestUnit(cladZ/cladEdep, "Length")
      << G4endl
      << "        Core: total energy: " 
      << std::setw(7) << G4BestUnit(coreEdep, "Energy")
-     << "       total track length: " 
-     << std::setw(7) << G4BestUnit(coreTrackLength, "Length")
+     << "       weighted Z: " 
+     << std::setw(7) << G4BestUnit(coreZ/coreEdep, "Length")
      << G4endl;
 }
 
@@ -128,24 +128,24 @@ void EventAction::EndOfEventAction(const G4Event* event)
     G4cout << "---> End of event: " << eventID << G4endl;     
 
     PrintEventStatistics(
-      cladHit->GetEdep(), cladHit->GetTrackLength() / cladHit->GetEdep(),
-      coreHit->GetEdep(), coreHit->GetTrackLength() / coreHit->GetEdep());
+      cladHit->GetEdep(), cladHit->GetWeightedZ() / cladHit->GetEdep(),
+      coreHit->GetEdep(), coreHit->GetWeightedZ() / coreHit->GetEdep());
   }  
   
   // Fill histograms, ntuple
   //
   fCladEdepVec.clear();
   fCoreEdepVec.clear();
-  fCladTrackLengthVec.clear();
-  fCoreTrackLengthVec.clear();
+  fCladZVec.clear();
+  fCoreZVec.clear();
 
   for (int i=0;i<cladHC->entries();i++) {
       fCladEdepVec.push_back((*cladHC)[i]->GetEdep());
-      fCladTrackLengthVec.push_back((*cladHC)[i]->GetTrackLength() / (*cladHC)[i]->GetEdep());
+      fCladZVec.push_back((*cladHC)[i]->GetWeightedZ() / (*cladHC)[i]->GetEdep());
   }
   for (int i=0;i<coreHC->entries();i++) {
       fCoreEdepVec.push_back((*coreHC)[i]->GetEdep());
-      fCoreTrackLengthVec.push_back((*coreHC)[i]->GetTrackLength() / (*coreHC)[i]->GetEdep());
+      fCoreZVec.push_back((*coreHC)[i]->GetWeightedZ() / (*coreHC)[i]->GetEdep());
   }
 
   // get analysis manager
@@ -154,14 +154,14 @@ void EventAction::EndOfEventAction(const G4Event* event)
   // fill histograms
   analysisManager->FillH1(0, cladHit->GetEdep());
   analysisManager->FillH1(1, coreHit->GetEdep());
-  analysisManager->FillH1(2, cladHit->GetTrackLength() / cladHit->GetEdep());
-  analysisManager->FillH1(3, coreHit->GetTrackLength() / coreHit->GetEdep());
+  analysisManager->FillH1(2, cladHit->GetWeightedZ() / cladHit->GetEdep());
+  analysisManager->FillH1(3, coreHit->GetWeightedZ() / coreHit->GetEdep());
   
   // fill ntuple
   analysisManager->FillNtupleDColumn(0, cladHit->GetEdep());
   analysisManager->FillNtupleDColumn(1, coreHit->GetEdep());
-  analysisManager->FillNtupleDColumn(2, cladHit->GetTrackLength() / cladHit->GetEdep());
-  analysisManager->FillNtupleDColumn(3, coreHit->GetTrackLength() / coreHit->GetEdep());
+  analysisManager->FillNtupleDColumn(2, cladHit->GetWeightedZ() / cladHit->GetEdep());
+  analysisManager->FillNtupleDColumn(3, coreHit->GetWeightedZ() / coreHit->GetEdep());
   analysisManager->AddNtupleRow();  
 }  
 

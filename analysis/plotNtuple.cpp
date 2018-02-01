@@ -65,6 +65,7 @@ int main ( int argc, char **argv ) {
     // Create a canvas and divide it into 2x2 pads
     TCanvas* c1 = new TCanvas("c1", "", 20, 20, 1000, 1000);
 
+    // start the output PDF file
     sprintf(outfilename,"%s_events.pdf[",inname.Data());
     c1->Print(outfilename);
     //c1->Divide(2,2);
@@ -74,33 +75,48 @@ int main ( int argc, char **argv ) {
 
     // Get ntuple
     TTree* ntuple = (TTree*)f.Get("B4");
-    std::vector<double> *coreEVec = 0;
+
+    //set up branches
+    vector<double> *coreEVec = 0;
     TBranch *b_coreEVec = 0;
     ntuple->SetBranchAddress("EcoreVec", &coreEVec, &b_coreEVec);
     double coreETot;
     ntuple->SetBranchAddress("Ecore", &coreETot);
 
-    for (Int_t indx = 0; indx < ntuple->GetEntries(); indx++) {
+    double hit_threshold = 0.1; //MeV threshold for a fiber hit
+    double etot_threshold = 1.0; //MeV trigger threshold for total energy in all fibers
+    int nhits_threshold = 2; //hit count threshold to plot the event
+    vector<int> hitVector;
+    vector<vector<int>> clusterVector;
+
+    for (Int_t indx = 0; indx < ntuple->GetEntries(); indx++) { // event loop
         ntuple->GetEntry(indx);
         int nHits = 0;
-        if (coreETot > 1.0) {
+        if (coreETot > etot_threshold) {
             hist_coreE->Reset();
             sprintf(title,"energy deposition map, total energy %f",coreETot);
             hist_coreE->SetTitle(title);
             for (int ix = 0;ix<100;ix++) {
                 for (int iy = 0;iy<100;iy++) {
-                    if (coreEVec->at(ix+100*iy)!=0) nHits++;
+                    if (coreEVec->at(ix+100*iy) > hit_threshold) {
+                        nHits++;
+                    }
                     hist_coreE->Fill(ix,iy,coreEVec->at(ix+100*iy));
                 }
             }
-            if (nHits>1){
+            if (nHits >= nhits_threshold){
                 hist_coreE->Draw("colz");
                 hist_coreE->GetZaxis()->SetRange(0,2.0);
                 sprintf(outfilename,"%s_events.pdf",inname.Data());
                 c1->Print(outfilename);
             }
         }
+
+
+
     }
+
+    //finish the output PDF file
     sprintf(outfilename,"%s_events.pdf]",inname.Data());
     c1->Print(outfilename);
 }  

@@ -23,12 +23,12 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: B4cCalorimeterSD.cc 100946 2016-11-03 11:28:08Z gcosmo $
+// $Id: CalorimeterSD.cc 100946 2016-11-03 11:28:08Z gcosmo $
 //
-/// \file B4cCalorimeterSD.cc
-/// \brief Implementation of the B4cCalorimeterSD class
+/// \file CalorimeterSD.cc
+/// \brief Implementation of the CalorimeterSD class
 
-#include "B4cCalorimeterSD.hh"
+#include "CalorimeterSD.hh"
 #include "G4HCofThisEvent.hh"
 #include "G4Step.hh"
 #include "G4ThreeVector.hh"
@@ -37,7 +37,7 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B4cCalorimeterSD::B4cCalorimeterSD(
+CalorimeterSD::CalorimeterSD(
                             const G4String& name, 
                             const G4String& hitsCollectionName,
                             G4int baseDepth,
@@ -54,18 +54,18 @@ B4cCalorimeterSD::B4cCalorimeterSD(
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B4cCalorimeterSD::~B4cCalorimeterSD() 
+CalorimeterSD::~CalorimeterSD() 
 { 
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void B4cCalorimeterSD::Initialize(G4HCofThisEvent* hce)
+void CalorimeterSD::Initialize(G4HCofThisEvent* hce)
 {
   fNofCells = fNofRows * fNofCols;
   // Create hits collection
   fHitsCollection 
-    = new B4cCalorHitsCollection(SensitiveDetectorName, collectionName[0]); 
+    = new CalorHitsCollection(SensitiveDetectorName, collectionName[0]); 
 
   // Add this collection in hce
   auto hcID 
@@ -75,13 +75,13 @@ void B4cCalorimeterSD::Initialize(G4HCofThisEvent* hce)
   // Create hits
   // fNofCells for cells + one more for total sums 
   for (G4int i=0; i<fNofCells+1; i++ ) {
-    fHitsCollection->insert(new B4cCalorHit());
+    fHitsCollection->insert(new CalorHit());
   }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4bool B4cCalorimeterSD::ProcessHits(G4Step* step, 
+G4bool CalorimeterSD::ProcessHits(G4Step* step, 
                                      G4TouchableHistory*)
 {  
   // energy deposit
@@ -112,7 +112,7 @@ G4bool B4cCalorimeterSD::ProcessHits(G4Step* step,
   if ( ! hit ) {
     G4ExceptionDescription msg;
     msg << "Cannot access hit " << layerNumber; 
-    G4Exception("B4cCalorimeterSD::ProcessHits()",
+    G4Exception("CalorimeterSD::ProcessHits()",
       "MyCode0004", FatalException, msg);
   }         
 
@@ -129,7 +129,7 @@ G4bool B4cCalorimeterSD::ProcessHits(G4Step* step,
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void B4cCalorimeterSD::EndOfEvent(G4HCofThisEvent*)
+void CalorimeterSD::EndOfEvent(G4HCofThisEvent*)
 {
   if ( verboseLevel>1 ) { 
      auto nofHits = fHitsCollection->entries();

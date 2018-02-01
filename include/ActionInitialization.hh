@@ -23,24 +23,24 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: B4cActionInitialization.hh 68058 2013-03-13 14:47:43Z gcosmo $
+// $Id: ActionInitialization.hh 68058 2013-03-13 14:47:43Z gcosmo $
 //
-/// \file B4cActionInitialization.hh
-/// \brief Definition of the B4cActionInitialization class
+/// \file ActionInitialization.hh
+/// \brief Definition of the ActionInitialization class
 
-#ifndef B4cActionInitialization_h
-#define B4cActionInitialization_h 1
+#ifndef ActionInitialization_h
+#define ActionInitialization_h 1
 
 #include "G4VUserActionInitialization.hh"
 
 /// Action initialization class.
 ///
 
-class B4cActionInitialization : public G4VUserActionInitialization
+class ActionInitialization : public G4VUserActionInitialization
 {
   public:
-    B4cActionInitialization();
-    virtual ~B4cActionInitialization();
+    ActionInitialization();
+    virtual ~ActionInitialization();
 
     virtual void BuildForMaster() const;
     virtual void Build() const;

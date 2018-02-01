@@ -23,15 +23,15 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: B4cEventAction.cc 100946 2016-11-03 11:28:08Z gcosmo $
+// $Id: EventAction.cc 100946 2016-11-03 11:28:08Z gcosmo $
 // 
-/// \file B4cEventAction.cc
-/// \brief Implementation of the B4cEventAction class
+/// \file EventAction.cc
+/// \brief Implementation of the EventAction class
 
-#include "B4cEventAction.hh"
-#include "B4cCalorimeterSD.hh"
-#include "B4cCalorHit.hh"
-#include "B4Analysis.hh"
+#include "EventAction.hh"
+#include "CalorimeterSD.hh"
+#include "CalorHit.hh"
+#include "Analysis.hh"
 
 #include "G4RunManager.hh"
 #include "G4Event.hh"
@@ -44,7 +44,7 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B4cEventAction::B4cEventAction()
+EventAction::EventAction()
  : G4UserEventAction(),
    fAbsHCID(-1),
    fGapHCID(-1)
@@ -52,23 +52,23 @@ B4cEventAction::B4cEventAction()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B4cEventAction::~B4cEventAction()
+EventAction::~EventAction()
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B4cCalorHitsCollection* 
-B4cEventAction::GetHitsCollection(G4int hcID,
+CalorHitsCollection* 
+EventAction::GetHitsCollection(G4int hcID,
                                   const G4Event* event) const
 {
   auto hitsCollection 
-    = static_cast<B4cCalorHitsCollection*>(
+    = static_cast<CalorHitsCollection*>(
         event->GetHCofThisEvent()->GetHC(hcID));
   
   if ( ! hitsCollection ) {
     G4ExceptionDescription msg;
     msg << "Cannot access hitsCollection ID " << hcID; 
-    G4Exception("B4cEventAction::GetHitsCollection()",
+    G4Exception("EventAction::GetHitsCollection()",
       "MyCode0003", FatalException, msg);
   }         
 
@@ -77,7 +77,7 @@ B4cEventAction::GetHitsCollection(G4int hcID,
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void B4cEventAction::PrintEventStatistics(
+void EventAction::PrintEventStatistics(
                               G4double absoEdep, G4double absoTrackLength,
                               G4double gapEdep, G4double gapTrackLength) const
 {
@@ -97,12 +97,12 @@ void B4cEventAction::PrintEventStatistics(
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void B4cEventAction::BeginOfEventAction(const G4Event* /*event*/)
+void EventAction::BeginOfEventAction(const G4Event* /*event*/)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void B4cEventAction::EndOfEventAction(const G4Event* event)
+void EventAction::EndOfEventAction(const G4Event* event)
 {  
   // Get hits collections IDs (only once)
   if ( fAbsHCID == -1 ) {

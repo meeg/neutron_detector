@@ -23,17 +23,17 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: B4cEventAction.hh 75215 2013-10-29 16:07:06Z gcosmo $
+// $Id: EventAction.hh 75215 2013-10-29 16:07:06Z gcosmo $
 // 
-/// \file B4cEventAction.hh
-/// \brief Definition of the B4cEventAction class
+/// \file EventAction.hh
+/// \brief Definition of the EventAction class
 
-#ifndef B4cEventAction_h
-#define B4cEventAction_h 1
+#ifndef EventAction_h
+#define EventAction_h 1
 
 #include "G4UserEventAction.hh"
 
-#include "B4cCalorHit.hh"
+#include "CalorHit.hh"
 
 #include "globals.hh"
 
@@ -43,11 +43,11 @@
 /// deposit and track lengths of charged particles in Absober and Gap layers 
 /// stored in the hits collections.
 
-class B4cEventAction : public G4UserEventAction
+class EventAction : public G4UserEventAction
 {
 public:
-  B4cEventAction();
-  virtual ~B4cEventAction();
+  EventAction();
+  virtual ~EventAction();
 
   virtual void  BeginOfEventAction(const G4Event* event);
   virtual void    EndOfEventAction(const G4Event* event);
@@ -58,7 +58,7 @@ public:
     
 private:
   // methods
-  B4cCalorHitsCollection* GetHitsCollection(G4int hcID,
+  CalorHitsCollection* GetHitsCollection(G4int hcID,
                                             const G4Event* event) const;
   void PrintEventStatistics(G4double absoEdep, G4double absoTrackLength,
                             G4double gapEdep, G4double gapTrackLength) const;

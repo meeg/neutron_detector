@@ -28,8 +28,8 @@
 /// \file exampleB4c.cc
 /// \brief Main program of the B4c example
 
-#include "B4cDetectorConstruction.hh"
-#include "B4cActionInitialization.hh"
+#include "DetectorConstruction.hh"
+#include "ActionInitialization.hh"
 
 #ifdef G4MULTITHREADED
 #include "G4MTRunManager.hh"
@@ -111,13 +111,13 @@ int main(int argc,char** argv)
 
   // Set mandatory initialization classes
   //
-  auto detConstruction = new B4cDetectorConstruction();
+  auto detConstruction = new DetectorConstruction();
   runManager->SetUserInitialization(detConstruction);
 
   auto physicsList = new QGSP_BERT_HP;
   runManager->SetUserInitialization(physicsList);
     
-  auto actionInitialization = new B4cActionInitialization();
+  auto actionInitialization = new ActionInitialization();
   runManager->SetUserInitialization(actionInitialization);
   
   // Initialize visualization

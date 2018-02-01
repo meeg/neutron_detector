@@ -23,12 +23,12 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: B4cCalorHit.cc 69586 2013-05-08 14:20:11Z gcosmo $
+// $Id: CalorHit.cc 69586 2013-05-08 14:20:11Z gcosmo $
 //
-/// \file B4cCalorHit.cc
-/// \brief Implementation of the B4cCalorHit class
+/// \file CalorHit.cc
+/// \brief Implementation of the CalorHit class
 
-#include "B4cCalorHit.hh"
+#include "CalorHit.hh"
 #include "G4UnitsTable.hh"
 #include "G4VVisManager.hh"
 #include "G4Circle.hh"
@@ -37,11 +37,11 @@
 
 #include <iomanip>
 
-G4ThreadLocal G4Allocator<B4cCalorHit>* B4cCalorHitAllocator = 0;
+G4ThreadLocal G4Allocator<CalorHit>* CalorHitAllocator = 0;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B4cCalorHit::B4cCalorHit()
+CalorHit::CalorHit()
  : G4VHit(),
    fEdep(0.),
    fTrackLength(0.)
@@ -49,11 +49,11 @@ B4cCalorHit::B4cCalorHit()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B4cCalorHit::~B4cCalorHit() {}
+CalorHit::~CalorHit() {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B4cCalorHit::B4cCalorHit(const B4cCalorHit& right)
+CalorHit::CalorHit(const CalorHit& right)
   : G4VHit()
 {
   fEdep        = right.fEdep;
@@ -62,7 +62,7 @@ B4cCalorHit::B4cCalorHit(const B4cCalorHit& right)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-const B4cCalorHit& B4cCalorHit::operator=(const B4cCalorHit& right)
+const CalorHit& CalorHit::operator=(const CalorHit& right)
 {
   fEdep        = right.fEdep;
   fTrackLength = right.fTrackLength;
@@ -72,14 +72,14 @@ const B4cCalorHit& B4cCalorHit::operator=(const B4cCalorHit& right)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4int B4cCalorHit::operator==(const B4cCalorHit& right) const
+G4int CalorHit::operator==(const CalorHit& right) const
 {
   return ( this == &right ) ? 1 : 0;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void B4cCalorHit::Print()
+void CalorHit::Print()
 {
   G4cout
      << "Edep: " 

@@ -23,14 +23,14 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: B4RunAction.cc 100946 2016-11-03 11:28:08Z gcosmo $
+// $Id: RunAction.cc 100946 2016-11-03 11:28:08Z gcosmo $
 //
-/// \file B4RunAction.cc
-/// \brief Implementation of the B4RunAction class
+/// \file RunAction.cc
+/// \brief Implementation of the RunAction class
 
-#include "B4RunAction.hh"
-#include "B4Analysis.hh"
-#include "B4cEventAction.hh"
+#include "RunAction.hh"
+#include "Analysis.hh"
+#include "EventAction.hh"
 
 #include "G4Run.hh"
 #include "G4RunManager.hh"
@@ -39,21 +39,21 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B4RunAction::B4RunAction()
+RunAction::RunAction()
  : G4UserRunAction()
 { 
   // set printing event number per each event
   G4RunManager::GetRunManager()->SetPrintProgress(1);     
 
-  const B4cEventAction* constEventAction
-        = static_cast<const B4cEventAction*>(G4RunManager::GetRunManager()
+  const EventAction* constEventAction
+        = static_cast<const EventAction*>(G4RunManager::GetRunManager()
                       ->GetUserEventAction());
-  B4cEventAction* eventAction
-          = const_cast<B4cEventAction*>(constEventAction);
+  EventAction* eventAction
+          = const_cast<EventAction*>(constEventAction);
 
   // Create analysis manager
   // The choice of analysis technology is done via selectin of a namespace
-  // in B4Analysis.hh
+  // in Analysis.hh
   auto analysisManager = G4AnalysisManager::Instance();
   G4cout << "Using " << analysisManager->GetType() << G4endl;
 
@@ -89,14 +89,14 @@ B4RunAction::B4RunAction()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B4RunAction::~B4RunAction()
+RunAction::~RunAction()
 {
   delete G4AnalysisManager::Instance();  
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void B4RunAction::BeginOfRunAction(const G4Run* /*run*/)
+void RunAction::BeginOfRunAction(const G4Run* /*run*/)
 { 
   //inform the runManager to save random number seed
   //G4RunManager::GetRunManager()->SetRandomNumberStore(true);
@@ -112,7 +112,7 @@ void B4RunAction::BeginOfRunAction(const G4Run* /*run*/)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void B4RunAction::EndOfRunAction(const G4Run* /*run*/)
+void RunAction::EndOfRunAction(const G4Run* /*run*/)
 {
   // print histogram statistics
   //

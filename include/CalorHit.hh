@@ -23,13 +23,13 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: B4cCalorHit.hh 100946 2016-11-03 11:28:08Z gcosmo $
+// $Id: CalorHit.hh 100946 2016-11-03 11:28:08Z gcosmo $
 //
-/// \file B4cCalorHit.hh
-/// \brief Definition of the B4cCalorHit class
+/// \file CalorHit.hh
+/// \brief Definition of the CalorHit class
 
-#ifndef B4cCalorHit_h
-#define B4cCalorHit_h 1
+#ifndef CalorHit_h
+#define CalorHit_h 1
 
 #include "G4VHit.hh"
 #include "G4THitsCollection.hh"
@@ -43,16 +43,16 @@
 /// of charged particles in a selected volume:
 /// - fEdep, fTrackLength
 
-class B4cCalorHit : public G4VHit
+class CalorHit : public G4VHit
 {
   public:
-    B4cCalorHit();
-    B4cCalorHit(const B4cCalorHit&);
-    virtual ~B4cCalorHit();
+    CalorHit();
+    CalorHit(const CalorHit&);
+    virtual ~CalorHit();
 
     // operators
-    const B4cCalorHit& operator=(const B4cCalorHit&);
-    G4int operator==(const B4cCalorHit&) const;
+    const CalorHit& operator=(const CalorHit&);
+    G4int operator==(const CalorHit&) const;
 
     inline void* operator new(size_t);
     inline void  operator delete(void*);
@@ -75,40 +75,40 @@ class B4cCalorHit : public G4VHit
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-using B4cCalorHitsCollection = G4THitsCollection<B4cCalorHit>;
+using CalorHitsCollection = G4THitsCollection<CalorHit>;
 
-extern G4ThreadLocal G4Allocator<B4cCalorHit>* B4cCalorHitAllocator;
+extern G4ThreadLocal G4Allocator<CalorHit>* CalorHitAllocator;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-inline void* B4cCalorHit::operator new(size_t)
+inline void* CalorHit::operator new(size_t)
 {
-  if (!B4cCalorHitAllocator) {
-    B4cCalorHitAllocator = new G4Allocator<B4cCalorHit>;
+  if (!CalorHitAllocator) {
+    CalorHitAllocator = new G4Allocator<CalorHit>;
   }
   void *hit;
-  hit = (void *) B4cCalorHitAllocator->MallocSingle();
+  hit = (void *) CalorHitAllocator->MallocSingle();
   return hit;
 }
 
-inline void B4cCalorHit::operator delete(void *hit)
+inline void CalorHit::operator delete(void *hit)
 {
-  if (!B4cCalorHitAllocator) {
-    B4cCalorHitAllocator = new G4Allocator<B4cCalorHit>;
+  if (!CalorHitAllocator) {
+    CalorHitAllocator = new G4Allocator<CalorHit>;
   }
-  B4cCalorHitAllocator->FreeSingle((B4cCalorHit*) hit);
+  CalorHitAllocator->FreeSingle((CalorHit*) hit);
 }
 
-inline void B4cCalorHit::Add(G4double de, G4double dl) {
+inline void CalorHit::Add(G4double de, G4double dl) {
   fEdep += de; 
   fTrackLength += dl;
 }
 
-inline G4double B4cCalorHit::GetEdep() const { 
+inline G4double CalorHit::GetEdep() const { 
   return fEdep; 
 }
 
-inline G4double B4cCalorHit::GetTrackLength() const { 
+inline G4double CalorHit::GetTrackLength() const { 
   return fTrackLength; 
 }
 

@@ -23,13 +23,13 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: B4RunAction.hh 74265 2013-10-02 14:41:20Z gcosmo $
+// $Id: RunAction.hh 74265 2013-10-02 14:41:20Z gcosmo $
 // 
-/// \file B4RunAction.hh
-/// \brief Definition of the B4RunAction class
+/// \file RunAction.hh
+/// \brief Definition of the RunAction class
 
-#ifndef B4RunAction_h
-#define B4RunAction_h 1
+#ifndef RunAction_h
+#define RunAction_h 1
 
 #include "G4UserRunAction.hh"
 #include "globals.hh"
@@ -48,17 +48,17 @@ class G4Run;
 /// - Track length in gap
 /// The same values are also saved in the ntuple.
 /// The histograms and ntuple are saved in the output file in a format
-/// accoring to a selected technology in B4Analysis.hh.
+/// accoring to a selected technology in Analysis.hh.
 ///
 /// In EndOfRunAction(), the accumulated statistic and computed 
 /// dispersion is printed.
 ///
 
-class B4RunAction : public G4UserRunAction
+class RunAction : public G4UserRunAction
 {
   public:
-    B4RunAction();
-    virtual ~B4RunAction();
+    RunAction();
+    virtual ~RunAction();
 
     virtual void BeginOfRunAction(const G4Run*);
     virtual void   EndOfRunAction(const G4Run*);

@@ -23,13 +23,13 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: B4cDetectorConstruction.hh 75215 2013-10-29 16:07:06Z gcosmo $
+// $Id: DetectorConstruction.hh 75215 2013-10-29 16:07:06Z gcosmo $
 // 
-/// \file B4cDetectorConstruction.hh
-/// \brief Definition of the B4cDetectorConstruction class
+/// \file DetectorConstruction.hh
+/// \brief Definition of the DetectorConstruction class
 
-#ifndef B4cDetectorConstruction_h
-#define B4cDetectorConstruction_h 1
+#ifndef DetectorConstruction_h
+#define DetectorConstruction_h 1
 
 #include "G4VUserDetectorConstruction.hh"
 #include "globals.hh"
@@ -48,16 +48,16 @@ class G4GlobalMagFieldMessenger;
 /// - the number of layers,
 /// - the transverse size of the calorimeter (the input face is a square).
 ///
-/// In ConstructSDandField() sensitive detectors of B4cCalorimeterSD type
+/// In ConstructSDandField() sensitive detectors of CalorimeterSD type
 /// are created and associated with the Absorber and Gap volumes.
 /// In addition a transverse uniform magnetic field is defined 
 /// via G4GlobalMagFieldMessenger class.
 
-class B4cDetectorConstruction : public G4VUserDetectorConstruction
+class DetectorConstruction : public G4VUserDetectorConstruction
 {
   public:
-    B4cDetectorConstruction();
-    virtual ~B4cDetectorConstruction();
+    DetectorConstruction();
+    virtual ~DetectorConstruction();
 
   public:
     virtual G4VPhysicalVolume* Construct();

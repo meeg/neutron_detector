@@ -23,13 +23,13 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: B4cDetectorConstruction.cc 101905 2016-12-07 11:34:39Z gunter $
+// $Id: DetectorConstruction.cc 101905 2016-12-07 11:34:39Z gunter $
 // 
-/// \file B4cDetectorConstruction.cc
-/// \brief Implementation of the B4cDetectorConstruction class
+/// \file DetectorConstruction.cc
+/// \brief Implementation of the DetectorConstruction class
 
-#include "B4cDetectorConstruction.hh"
-#include "B4cCalorimeterSD.hh"
+#include "DetectorConstruction.hh"
+#include "CalorimeterSD.hh"
 #include "G4Material.hh"
 #include "G4NistManager.hh"
 
@@ -51,11 +51,11 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 G4ThreadLocal 
-G4GlobalMagFieldMessenger* B4cDetectorConstruction::fMagFieldMessenger = 0; 
+G4GlobalMagFieldMessenger* DetectorConstruction::fMagFieldMessenger = 0; 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B4cDetectorConstruction::B4cDetectorConstruction()
+DetectorConstruction::DetectorConstruction()
  : G4VUserDetectorConstruction(),
    fCheckOverlaps(true),
    fNofRows(-1),
@@ -65,13 +65,13 @@ B4cDetectorConstruction::B4cDetectorConstruction()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B4cDetectorConstruction::~B4cDetectorConstruction()
+DetectorConstruction::~DetectorConstruction()
 { 
 }  
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4VPhysicalVolume* B4cDetectorConstruction::Construct()
+G4VPhysicalVolume* DetectorConstruction::Construct()
 {
   // Define materials 
   DefineMaterials();
@@ -82,7 +82,7 @@ G4VPhysicalVolume* B4cDetectorConstruction::Construct()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void B4cDetectorConstruction::DefineMaterials()
+void DetectorConstruction::DefineMaterials()
 { 
   // Lead material defined using NIST Manager
   auto nistManager = G4NistManager::Instance();
@@ -106,7 +106,7 @@ void B4cDetectorConstruction::DefineMaterials()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4VPhysicalVolume* B4cDetectorConstruction::DefineVolumes()
+G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 {
   // Geometry parameters
   fNofRows = 100;
@@ -302,7 +302,7 @@ G4VPhysicalVolume* B4cDetectorConstruction::DefineVolumes()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void B4cDetectorConstruction::ConstructSDandField()
+void DetectorConstruction::ConstructSDandField()
 {
   // G4SDManager::GetSDMpointer()->SetVerboseLevel(1);
 
@@ -310,12 +310,12 @@ void B4cDetectorConstruction::ConstructSDandField()
   // Sensitive detectors
   //
   auto absoSD 
-    = new B4cCalorimeterSD("AbsorberSD", "AbsorberHitsCollection", 1, fNofRows, fNofCols);
+    = new CalorimeterSD("AbsorberSD", "AbsorberHitsCollection", 1, fNofRows, fNofCols);
   G4SDManager::GetSDMpointer()->AddNewDetector(absoSD);
   SetSensitiveDetector("AbsoLV",absoSD);
 
   auto gapSD 
-    = new B4cCalorimeterSD("GapSD", "GapHitsCollection", 2, fNofRows, fNofCols);
+    = new CalorimeterSD("GapSD", "GapHitsCollection", 2, fNofRows, fNofCols);
   G4SDManager::GetSDMpointer()->AddNewDetector(gapSD);
   SetSensitiveDetector("GapLV",gapSD);
 

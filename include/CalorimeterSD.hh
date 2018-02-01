@@ -23,17 +23,17 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: B4cCalorimeterSD.hh 100946 2016-11-03 11:28:08Z gcosmo $
+// $Id: CalorimeterSD.hh 100946 2016-11-03 11:28:08Z gcosmo $
 //
-/// \file B4cCalorimeterSD.hh
-/// \brief Definition of the B4cCalorimeterSD class
+/// \file CalorimeterSD.hh
+/// \brief Definition of the CalorimeterSD class
 
-#ifndef B4cCalorimeterSD_h
-#define B4cCalorimeterSD_h 1
+#ifndef CalorimeterSD_h
+#define CalorimeterSD_h 1
 
 #include "G4VSensitiveDetector.hh"
 
-#include "B4cCalorHit.hh"
+#include "CalorHit.hh"
 
 #include <vector>
 
@@ -48,15 +48,15 @@ class G4HCofThisEvent;
 /// The values are accounted in hits in ProcessHits() function which is called
 /// by Geant4 kernel at each step.
 
-class B4cCalorimeterSD : public G4VSensitiveDetector
+class CalorimeterSD : public G4VSensitiveDetector
 {
   public:
-    B4cCalorimeterSD(const G4String& name, 
+    CalorimeterSD(const G4String& name, 
                      const G4String& hitsCollectionName, 
                      G4int baseDepth,
                      G4int nofRows,
                      G4int nofCols);
-    virtual ~B4cCalorimeterSD();
+    virtual ~CalorimeterSD();
   
     // methods from base class
     virtual void   Initialize(G4HCofThisEvent* hitCollection);
@@ -64,7 +64,7 @@ class B4cCalorimeterSD : public G4VSensitiveDetector
     virtual void   EndOfEvent(G4HCofThisEvent* hitCollection);
 
   private:
-    B4cCalorHitsCollection* fHitsCollection;
+    CalorHitsCollection* fHitsCollection;
     G4int  fBaseDepth;
     G4int  fNofRows;
     G4int  fNofCols;

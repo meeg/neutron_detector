@@ -68,22 +68,22 @@ RunAction::RunAction()
   //
   
   // Creating histograms
-  analysisManager->CreateH1("Eabs","Edep in absorber", 100, 0., 800*MeV);
-  analysisManager->CreateH1("Egap","Edep in gap", 100, 0., 100*MeV);
-  analysisManager->CreateH1("Labs","trackL in absorber", 100, 0., 1*m);
-  analysisManager->CreateH1("Lgap","trackL in gap", 100, 0., 50*cm);
+  analysisManager->CreateH1("Eclad","Edep in cladding", 100, 0., 800*MeV);
+  analysisManager->CreateH1("Ecore","Edep in core", 100, 0., 100*MeV);
+  analysisManager->CreateH1("Lclad","trackL in cladding", 100, 0., 1*m);
+  analysisManager->CreateH1("Lcore","trackL in core", 100, 0., 50*cm);
 
   // Creating ntuple
   //
   analysisManager->CreateNtuple("B4", "Edep and TrackL");
-  analysisManager->CreateNtupleDColumn("Eabs");
-  analysisManager->CreateNtupleDColumn("Egap");
-  analysisManager->CreateNtupleDColumn("Labs");
-  analysisManager->CreateNtupleDColumn("Lgap");
-  analysisManager->CreateNtupleDColumn("EabsVec",eventAction->GetAbsEdepVec());
-  analysisManager->CreateNtupleDColumn("EgapVec",eventAction->GetGapEdepVec());
-  analysisManager->CreateNtupleDColumn("LabsVec",eventAction->GetAbsTrackLengthVec());
-  analysisManager->CreateNtupleDColumn("LgapVec",eventAction->GetGapTrackLengthVec());
+  analysisManager->CreateNtupleDColumn("Eclad");
+  analysisManager->CreateNtupleDColumn("Ecore");
+  analysisManager->CreateNtupleDColumn("Lclad");
+  analysisManager->CreateNtupleDColumn("Lcore");
+  analysisManager->CreateNtupleDColumn("EcladVec",eventAction->GetCladEdepVec());
+  analysisManager->CreateNtupleDColumn("EcoreVec",eventAction->GetCoreEdepVec());
+  analysisManager->CreateNtupleDColumn("LcladVec",eventAction->GetCladTrackLengthVec());
+  analysisManager->CreateNtupleDColumn("LcoreVec",eventAction->GetCoreTrackLengthVec());
   analysisManager->FinishNtuple();
 }
 
@@ -126,22 +126,22 @@ void RunAction::EndOfRunAction(const G4Run* /*run*/)
       G4cout << "for the local thread " << G4endl << G4endl; 
     }
     
-    G4cout << " EAbs : mean = " 
+    G4cout << " EClad : mean = " 
        << G4BestUnit(analysisManager->GetH1(0)->mean(), "Energy") 
        << " rms = " 
        << G4BestUnit(analysisManager->GetH1(0)->rms(),  "Energy") << G4endl;
     
-    G4cout << " EGap : mean = " 
+    G4cout << " ECore : mean = " 
        << G4BestUnit(analysisManager->GetH1(1)->mean(), "Energy") 
        << " rms = " 
        << G4BestUnit(analysisManager->GetH1(1)->rms(),  "Energy") << G4endl;
     
-    G4cout << " LAbs : mean = " 
+    G4cout << " LClad : mean = " 
       << G4BestUnit(analysisManager->GetH1(2)->mean(), "Length") 
       << " rms = " 
       << G4BestUnit(analysisManager->GetH1(2)->rms(),  "Length") << G4endl;
 
-    G4cout << " LGap : mean = " 
+    G4cout << " LCore : mean = " 
       << G4BestUnit(analysisManager->GetH1(3)->mean(), "Length") 
       << " rms = " 
       << G4BestUnit(analysisManager->GetH1(3)->rms(),  "Length") << G4endl;

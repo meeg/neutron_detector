@@ -46,8 +46,8 @@
 
 EventAction::EventAction()
  : G4UserEventAction(),
-   fAbsHCID(-1),
-   fGapHCID(-1)
+   fCladHCID(-1),
+   fCoreHCID(-1)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -78,20 +78,20 @@ EventAction::GetHitsCollection(G4int hcID,
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void EventAction::PrintEventStatistics(
-                              G4double absoEdep, G4double absoTrackLength,
-                              G4double gapEdep, G4double gapTrackLength) const
+                              G4double cladEdep, G4double cladTrackLength,
+                              G4double coreEdep, G4double coreTrackLength) const
 {
   // print event statistics
   G4cout
-     << "   Absorber: total energy: " 
-     << std::setw(7) << G4BestUnit(absoEdep, "Energy")
+     << "   Cladding: total energy: " 
+     << std::setw(7) << G4BestUnit(cladEdep, "Energy")
      << "       total track length: " 
-     << std::setw(7) << G4BestUnit(absoTrackLength, "Length")
+     << std::setw(7) << G4BestUnit(cladTrackLength, "Length")
      << G4endl
-     << "        Gap: total energy: " 
-     << std::setw(7) << G4BestUnit(gapEdep, "Energy")
+     << "        Core: total energy: " 
+     << std::setw(7) << G4BestUnit(coreEdep, "Energy")
      << "       total track length: " 
-     << std::setw(7) << G4BestUnit(gapTrackLength, "Length")
+     << std::setw(7) << G4BestUnit(coreTrackLength, "Length")
      << G4endl;
 }
 
@@ -105,20 +105,20 @@ void EventAction::BeginOfEventAction(const G4Event* /*event*/)
 void EventAction::EndOfEventAction(const G4Event* event)
 {  
   // Get hits collections IDs (only once)
-  if ( fAbsHCID == -1 ) {
-    fAbsHCID 
-      = G4SDManager::GetSDMpointer()->GetCollectionID("AbsorberHitsCollection");
-    fGapHCID 
-      = G4SDManager::GetSDMpointer()->GetCollectionID("GapHitsCollection");
+  if ( fCladHCID == -1 ) {
+    fCladHCID 
+      = G4SDManager::GetSDMpointer()->GetCollectionID("CladdingHitsCollection");
+    fCoreHCID 
+      = G4SDManager::GetSDMpointer()->GetCollectionID("CoreHitsCollection");
   }
 
   // Get hits collections
-  auto absoHC = GetHitsCollection(fAbsHCID, event);
-  auto gapHC = GetHitsCollection(fGapHCID, event);
+  auto cladHC = GetHitsCollection(fCladHCID, event);
+  auto coreHC = GetHitsCollection(fCoreHCID, event);
 
   // Get hit with total values
-  auto absoHit = (*absoHC)[absoHC->entries()-1];
-  auto gapHit = (*gapHC)[gapHC->entries()-1];
+  auto cladHit = (*cladHC)[cladHC->entries()-1];
+  auto coreHit = (*coreHC)[coreHC->entries()-1];
  
   // Print per event (modulo n)
   //
@@ -128,40 +128,40 @@ void EventAction::EndOfEventAction(const G4Event* event)
     G4cout << "---> End of event: " << eventID << G4endl;     
 
     PrintEventStatistics(
-      absoHit->GetEdep(), absoHit->GetTrackLength() / absoHit->GetEdep(),
-      gapHit->GetEdep(), gapHit->GetTrackLength() / gapHit->GetEdep());
+      cladHit->GetEdep(), cladHit->GetTrackLength() / cladHit->GetEdep(),
+      coreHit->GetEdep(), coreHit->GetTrackLength() / coreHit->GetEdep());
   }  
   
   // Fill histograms, ntuple
   //
-  fAbsEdepVec.clear();
-  fGapEdepVec.clear();
-  fAbsTrackLengthVec.clear();
-  fGapTrackLengthVec.clear();
+  fCladEdepVec.clear();
+  fCoreEdepVec.clear();
+  fCladTrackLengthVec.clear();
+  fCoreTrackLengthVec.clear();
 
-  for (int i=0;i<absoHC->entries();i++) {
-      fAbsEdepVec.push_back((*absoHC)[i]->GetEdep());
-      fAbsTrackLengthVec.push_back((*absoHC)[i]->GetTrackLength() / (*absoHC)[i]->GetEdep());
+  for (int i=0;i<cladHC->entries();i++) {
+      fCladEdepVec.push_back((*cladHC)[i]->GetEdep());
+      fCladTrackLengthVec.push_back((*cladHC)[i]->GetTrackLength() / (*cladHC)[i]->GetEdep());
   }
-  for (int i=0;i<gapHC->entries();i++) {
-      fGapEdepVec.push_back((*gapHC)[i]->GetEdep());
-      fGapTrackLengthVec.push_back((*gapHC)[i]->GetTrackLength() / (*gapHC)[i]->GetEdep());
+  for (int i=0;i<coreHC->entries();i++) {
+      fCoreEdepVec.push_back((*coreHC)[i]->GetEdep());
+      fCoreTrackLengthVec.push_back((*coreHC)[i]->GetTrackLength() / (*coreHC)[i]->GetEdep());
   }
 
   // get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
  
   // fill histograms
-  analysisManager->FillH1(0, absoHit->GetEdep());
-  analysisManager->FillH1(1, gapHit->GetEdep());
-  analysisManager->FillH1(2, absoHit->GetTrackLength() / absoHit->GetEdep());
-  analysisManager->FillH1(3, gapHit->GetTrackLength() / gapHit->GetEdep());
+  analysisManager->FillH1(0, cladHit->GetEdep());
+  analysisManager->FillH1(1, coreHit->GetEdep());
+  analysisManager->FillH1(2, cladHit->GetTrackLength() / cladHit->GetEdep());
+  analysisManager->FillH1(3, coreHit->GetTrackLength() / coreHit->GetEdep());
   
   // fill ntuple
-  analysisManager->FillNtupleDColumn(0, absoHit->GetEdep());
-  analysisManager->FillNtupleDColumn(1, gapHit->GetEdep());
-  analysisManager->FillNtupleDColumn(2, absoHit->GetTrackLength() / absoHit->GetEdep());
-  analysisManager->FillNtupleDColumn(3, gapHit->GetTrackLength() / gapHit->GetEdep());
+  analysisManager->FillNtupleDColumn(0, cladHit->GetEdep());
+  analysisManager->FillNtupleDColumn(1, coreHit->GetEdep());
+  analysisManager->FillNtupleDColumn(2, cladHit->GetTrackLength() / cladHit->GetEdep());
+  analysisManager->FillNtupleDColumn(3, coreHit->GetTrackLength() / coreHit->GetEdep());
   analysisManager->AddNtupleRow();  
 }  
 

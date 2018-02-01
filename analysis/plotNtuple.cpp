@@ -76,9 +76,9 @@ int main ( int argc, char **argv ) {
     TTree* ntuple = (TTree*)f.Get("B4");
     std::vector<double> *coreEVec = 0;
     TBranch *b_coreEVec = 0;
-    ntuple->SetBranchAddress("EgapVec", &coreEVec, &b_coreEVec);
+    ntuple->SetBranchAddress("EcoreVec", &coreEVec, &b_coreEVec);
     double coreETot;
-    ntuple->SetBranchAddress("Egap", &coreETot);
+    ntuple->SetBranchAddress("Ecore", &coreETot);
 
     for (Int_t indx = 0; indx < ntuple->GetEntries(); indx++) {
         ntuple->GetEntry(indx);

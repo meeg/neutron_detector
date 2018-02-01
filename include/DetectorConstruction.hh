@@ -37,6 +37,7 @@
 class G4VPhysicalVolume;
 class G4GlobalMagFieldMessenger;
 
+// NOTE: description is for B4c example, geometry has changed to a bundle of square fibers.
 /// Detector construction class to define materials and geometry.
 /// The calorimeter is a box made of a given number of layers. A layer consists
 /// of an absorber plate and of a detection gap. The layer is replicated.
@@ -49,7 +50,7 @@ class G4GlobalMagFieldMessenger;
 /// - the transverse size of the calorimeter (the input face is a square).
 ///
 /// In ConstructSDandField() sensitive detectors of CalorimeterSD type
-/// are created and associated with the Absorber and Gap volumes.
+/// are created and associated with the Cladding and Core volumes.
 /// In addition a transverse uniform magnetic field is defined 
 /// via G4GlobalMagFieldMessenger class.
 

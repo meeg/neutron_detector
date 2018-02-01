@@ -111,15 +111,15 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   // Geometry parameters
   fNofRows = 100;
   fNofCols = 100;
-  //G4double absoThickness = 10.*mm;
-  //G4double gapThickness =  5.*mm;
+  //G4double cladThickness = 10.*mm;
+  //G4double coreThickness =  5.*mm;
   G4double fiberSizeXY  = 0.25*mm;
   G4double coreSizeXY  = 0.23*mm;
   G4double calorSizeX  = fiberSizeXY * fNofCols ;
   G4double calorSizeY  = fiberSizeXY * fNofRows ;
   G4double calorSizeZ  = 10.*cm;
 
-  //auto layerThickness = absoThickness + gapThickness;
+  //auto layerThickness = cladThickness + coreThickness;
   //auto calorThickness = fNofLayers * layerThickness;
   auto worldSizeX = 1.2 * calorSizeX;
   auto worldSizeY = 1.2 * calorSizeY;
@@ -127,11 +127,11 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   
   // Get materials
   auto defaultMaterial = G4Material::GetMaterial("Galactic");
-  auto absorberMaterial = G4Material::GetMaterial("G4_LUCITE");
-  auto gapMaterial = G4Material::GetMaterial("G4_POLYSTYRENE");
+  auto cladMaterial = G4Material::GetMaterial("G4_LUCITE");
+  auto coreMaterial = G4Material::GetMaterial("G4_POLYSTYRENE");
   
 
-  if ( ! defaultMaterial || ! absorberMaterial || ! gapMaterial ) {
+  if ( ! defaultMaterial || ! cladMaterial || ! coreMaterial ) {
     G4ExceptionDescription msg;
     msg << "Cannot retrieve materials already defined."; 
     G4Exception("B4DetectorConstruction::DefineVolumes()",
@@ -228,47 +228,47 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
                  fiberSizeXY);  // witdth of replica
   
   //                               
-  // Absorber
+  // Cladding
   //
-  auto absorberS 
-    = new G4Box("Abso",            // its name
+  auto cladS 
+    = new G4Box("Clad",            // its name
                  fiberSizeXY/2, fiberSizeXY/2, calorSizeZ/2); //its size
                          
-  auto absorberLV
+  auto cladLV
     = new G4LogicalVolume(
-                 absorberS,        // its solid
-                 absorberMaterial, // its material
-                 "AbsoLV");        // its name
+                 cladS,        // its solid
+                 cladMaterial, // its material
+                 "CladLV");        // its name
                                    
    new G4PVPlacement(
                  0,                // no rotation
                  G4ThreeVector(0., 0., 0.), // its position
-                 absorberLV,       // its logical volume                         
-                 "Abso",           // its name
+                 cladLV,       // its logical volume                         
+                 "Clad",           // its name
                  layerLV,          // its mother  volume
                  false,            // no boolean operation
                  0,                // copy number
                  fCheckOverlaps);  // checking overlaps 
 
   //                               
-  // Gap
+  // Core
   //
-  auto gapS 
-    = new G4Box("Gap",             // its name
+  auto coreS 
+    = new G4Box("Core",             // its name
                  coreSizeXY/2, coreSizeXY/2, calorSizeZ/2); //its size
                          
-  auto gapLV
+  auto coreLV
     = new G4LogicalVolume(
-                 gapS,             // its solid
-                 gapMaterial,      // its material
-                 "GapLV");         // its name
+                 coreS,             // its solid
+                 coreMaterial,      // its material
+                 "CoreLV");         // its name
                                    
   new G4PVPlacement(
                  0,                // no rotation
                  G4ThreeVector(0., 0., 0.), // its position
-                 gapLV,            // its logical volume                         
-                 "Gap",            // its name
-                 absorberLV,          // its mother  volume
+                 coreLV,            // its logical volume                         
+                 "Core",            // its name
+                 cladLV,          // its mother  volume
                  false,            // no boolean operation
                  0,                // copy number
                  fCheckOverlaps);  // checking overlaps 
@@ -280,9 +280,9 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     << G4endl 
     << "------------------------------------------------------------" << G4endl
     << "---> The calorimeter is " << fNofRows << " rows and " << fNofCols << " columns of fibers: [ "
-    << fiberSizeXY/mm << "mm overall dimension, cladding material " << absorberMaterial->GetName() 
+    << fiberSizeXY/mm << "mm overall dimension, cladding material " << cladMaterial->GetName() 
     << " + "
-    << coreSizeXY/mm << "mm core dimension, core material " << gapMaterial->GetName() << " ] " << G4endl
+    << coreSizeXY/mm << "mm core dimension, core material " << coreMaterial->GetName() << " ] " << G4endl
     << "------------------------------------------------------------" << G4endl;
   
   //                                        
@@ -309,15 +309,15 @@ void DetectorConstruction::ConstructSDandField()
   // 
   // Sensitive detectors
   //
-  auto absoSD 
-    = new CalorimeterSD("AbsorberSD", "AbsorberHitsCollection", 1, fNofRows, fNofCols);
-  G4SDManager::GetSDMpointer()->AddNewDetector(absoSD);
-  SetSensitiveDetector("AbsoLV",absoSD);
+  auto cladSD 
+    = new CalorimeterSD("CladdingSD", "CladdingHitsCollection", 1, fNofRows, fNofCols);
+  G4SDManager::GetSDMpointer()->AddNewDetector(cladSD);
+  SetSensitiveDetector("CladLV",cladSD);
 
-  auto gapSD 
-    = new CalorimeterSD("GapSD", "GapHitsCollection", 2, fNofRows, fNofCols);
-  G4SDManager::GetSDMpointer()->AddNewDetector(gapSD);
-  SetSensitiveDetector("GapLV",gapSD);
+  auto coreSD 
+    = new CalorimeterSD("CoreSD", "CoreHitsCollection", 2, fNofRows, fNofCols);
+  G4SDManager::GetSDMpointer()->AddNewDetector(coreSD);
+  SetSensitiveDetector("CoreLV",coreSD);
 
   // 
   // Magnetic field

@@ -40,7 +40,7 @@
 /// Event action class
 ///
 /// In EndOfEventAction(), it prints the accumulated quantities of the energy 
-/// deposit and track lengths of charged particles in Absober and Gap layers 
+/// deposit and track lengths of charged particles in Cladding and Core layers 
 /// stored in the hits collections.
 
 class EventAction : public G4UserEventAction
@@ -51,25 +51,25 @@ public:
 
   virtual void  BeginOfEventAction(const G4Event* event);
   virtual void    EndOfEventAction(const G4Event* event);
-  std::vector<G4double>& GetAbsEdepVec() { return fAbsEdepVec; }
-  std::vector<G4double>& GetGapEdepVec() { return fGapEdepVec; }
-  std::vector<G4double>& GetAbsTrackLengthVec() { return fAbsTrackLengthVec; }
-  std::vector<G4double>& GetGapTrackLengthVec() { return fGapTrackLengthVec; }
+  std::vector<G4double>& GetCladEdepVec() { return fCladEdepVec; }
+  std::vector<G4double>& GetCoreEdepVec() { return fCoreEdepVec; }
+  std::vector<G4double>& GetCladTrackLengthVec() { return fCladTrackLengthVec; }
+  std::vector<G4double>& GetCoreTrackLengthVec() { return fCoreTrackLengthVec; }
     
 private:
   // methods
   CalorHitsCollection* GetHitsCollection(G4int hcID,
                                             const G4Event* event) const;
-  void PrintEventStatistics(G4double absoEdep, G4double absoTrackLength,
-                            G4double gapEdep, G4double gapTrackLength) const;
+  void PrintEventStatistics(G4double cladEdep, G4double cladTrackLength,
+                            G4double coreEdep, G4double coreTrackLength) const;
   
   // data members                   
-  G4int  fAbsHCID;
-  G4int  fGapHCID;
-  std::vector<G4double>  fAbsEdepVec;
-  std::vector<G4double>  fGapEdepVec;
-  std::vector<G4double>  fAbsTrackLengthVec;
-  std::vector<G4double>  fGapTrackLengthVec;
+  G4int  fCladHCID;
+  G4int  fCoreHCID;
+  std::vector<G4double>  fCladEdepVec;
+  std::vector<G4double>  fCoreEdepVec;
+  std::vector<G4double>  fCladTrackLengthVec;
+  std::vector<G4double>  fCoreTrackLengthVec;
 };
                      
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

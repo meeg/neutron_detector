@@ -55,7 +55,8 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
   auto particleDefinition 
     = G4ParticleTable::GetParticleTable()->FindParticle("neutron");
   fParticleGun->SetParticleDefinition(particleDefinition);
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
+  //fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
+  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(1.,0.,0.));
   fParticleGun->SetParticleEnergy(10.*MeV);
 }
 
@@ -100,8 +101,8 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   G4double originX = (2*G4UniformRand()-1)*mm;
   G4double originY = (2*G4UniformRand()-1)*mm;
   // Set gun position
-  fParticleGun
-    ->SetParticlePosition(G4ThreeVector(originX, originY, -worldZHalfLength));
+  //fParticleGun->SetParticlePosition(G4ThreeVector(originX, originY, -worldZHalfLength));
+  fParticleGun->SetParticlePosition(G4ThreeVector(-worldZHalfLength, originX, originY));
 
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }

@@ -109,20 +109,18 @@ void DetectorConstruction::DefineMaterials()
 G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 {
   // Geometry parameters
-  fNofRows = 100;
-  fNofCols = 100;
-  //G4double cladThickness = 10.*mm;
-  //G4double coreThickness =  5.*mm;
+  fNofRows = 20;
+  fNofCols = 20;
   G4double fiberSizeXY  = 0.25*mm;
-  G4double coreSizeXY  = 0.23*mm;
+  G4double coreSizeXY  = fiberSizeXY*0.92; //Saint-Gobain: cladding thickness is 4% of fiber dimension
   G4double calorSizeX  = fiberSizeXY * fNofCols ;
   G4double calorSizeY  = fiberSizeXY * fNofRows ;
-  G4double calorSizeZ  = 10.*cm;
+  G4double calorSizeZ  = 1.*cm;
 
   //auto layerThickness = cladThickness + coreThickness;
   //auto calorThickness = fNofLayers * layerThickness;
-  auto worldSizeX = 1.2 * calorSizeX;
-  auto worldSizeY = 1.2 * calorSizeY;
+  auto worldSizeX = 1.2 * calorSizeZ;
+  auto worldSizeY = 1.2 * calorSizeZ;
   auto worldSizeZ  = 1.2 * calorSizeZ; 
   
   // Get materials
@@ -289,10 +287,15 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   // Visualization attributes
   //
   worldLV->SetVisAttributes (G4VisAttributes::GetInvisible());
+  cladLV->SetVisAttributes (G4VisAttributes::GetInvisible());
+  columnLV->SetVisAttributes (G4VisAttributes::GetInvisible());
+  layerLV->SetVisAttributes (G4VisAttributes::GetInvisible());
 
   auto simpleBoxVisAtt= new G4VisAttributes(G4Colour(1.0,1.0,1.0));
   simpleBoxVisAtt->SetVisibility(true);
-  calorLV->SetVisAttributes(simpleBoxVisAtt);
+  //calorLV->SetVisAttributes(simpleBoxVisAtt);
+  calorLV->SetVisAttributes(G4VisAttributes::GetInvisible());
+  coreLV->SetVisAttributes(simpleBoxVisAtt);
 
   //
   // Always return the physical World

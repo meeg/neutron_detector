@@ -19,24 +19,43 @@ int main ( int argc, char **argv ) {
 
     TString inname;
     char outfilename[100];
+
+    //settings
+    int nrows = 20;
+    int ncols = 20;
+    double hit_threshold = 0.1; //MeV threshold for a fiber hit
+
+    double etot_threshold = 0.0; //MeV trigger threshold for total energy in all fibers
+    int nhits_threshold = 0; //hit count threshold to plot the event
+    unsigned int clustersize_threshold = 3; //cluster size threshold to plot the event
+
+
     int c;
-    while ((c = getopt(argc,argv,"ho:")) !=-1)
+    while ((c = getopt(argc,argv,"ho:r:c:t:")) !=-1)
         switch (c)
         {
             case 'h':
                 printf("-h: print this help\n");
                 printf("-o: use specified output filename\n");
+                printf("-r: use specified number of rows (default %d)\n",nrows);
+                printf("-c: use specified number of columns (default %d)\n",ncols);
+                printf("-t: use specified hit energy threshold (default %f)\n",hit_threshold);
                 return(0);
                 break;
             case 'o':
                 inname = optarg;
                 break;
+            case 'r':
+                nrows = atoi(optarg);
+                break;
+            case 'c':
+                ncols = atoi(optarg);
+                break;
+            case 't':
+                hit_threshold = atof(optarg);
+                break;
             //case 'n':
                 //flip_channels = false;
-                //break;
-            //case 'g':
-                //force_cal_grp = true;
-                //cal_grp = atoi(optarg);
                 //break;
             case '?':
                 printf("Invalid option or missing option argument; -h to list options\n");
@@ -63,13 +82,6 @@ int main ( int argc, char **argv ) {
 
     // Open file filled by Geant4 simulation 
     TFile f(argv[optind]);
-
-    double hit_threshold = 0.1; //MeV threshold for a fiber hit
-    double etot_threshold = 0.5; //MeV trigger threshold for total energy in all fibers
-    int nhits_threshold = 2; //hit count threshold to plot the event
-    unsigned int clustersize_threshold = 3; //hit count threshold to plot the event
-    int nrows = 20;
-    int ncols = 20;
 
     gROOT->Reset();
     gROOT->SetStyle("Plain");
@@ -114,51 +126,49 @@ int main ( int argc, char **argv ) {
         bool *is_clustered = new bool[nrows*ncols];
         int nHits = 0;
         unsigned int maxClusterSize = 0;
-        if (coreETot > etot_threshold) {
-            hist_coreE->Reset();
-            for (int ix = 0;ix<ncols;ix++) {
-                for (int iy = 0;iy<nrows;iy++) {
-                    int ichannel = iy + nrows * ix;
-                    //rowNumber + fNofRows * colNumber
-                    if (coreEVec->at(ichannel) > hit_threshold) {
-                        nHits++;
-                    }
-                    hist_coreE->Fill(ix,iy,coreEVec->at(ichannel));
+        hist_coreE->Reset();
+        for (int ix = 0;ix<ncols;ix++) {
+            for (int iy = 0;iy<nrows;iy++) {
+                int ichannel = iy + nrows * ix;
+                //rowNumber + fNofRows * colNumber
+                if (coreEVec->at(ichannel) > hit_threshold) {
+                    nHits++;
+                }
+                hist_coreE->Fill(ix,iy,coreEVec->at(ichannel));
 
-                    clustering_queue.push(ichannel);
-                    vector<int> *current_cluster = NULL;
-                    while (!clustering_queue.empty()) {
-                        int newhit = clustering_queue.front();
-                        clustering_queue.pop();
-                        if (coreEVec->at(newhit) > hit_threshold && !is_clustered[newhit]) { //if the hit is above threshold and has not been clustered
-                            if (!current_cluster) {
-                                current_cluster = new vector<int>;
-                                clusterVector.push_back(current_cluster);
-                            }
-                            current_cluster->push_back(newhit);
-                            is_clustered[newhit] = true;
-
-                            int newix = newhit/nrows;
-                            int newiy = newhit%nrows;
-
-                            // enqueue all the neighbors
-                            if (newix>0) clustering_queue.push(newiy + nrows * (newix-1));
-                            if (newix<ncols-1) clustering_queue.push(newiy + nrows * (newix+1));
-                            if (newiy>0) clustering_queue.push((newiy-1) + nrows * newix);
-                            if (newiy<nrows-1) clustering_queue.push((newiy+1) + nrows * newix);
-                            if (newix>0 && newiy>0) clustering_queue.push((newiy-1) + nrows * (newix-1));
-                            if (newix>0 && newiy<nrows-1) clustering_queue.push((newiy+1) + nrows * (newix-1));
-                            if (newix<ncols-1 && newiy>0) clustering_queue.push((newiy-1) + nrows * (newix+1));
-                            if (newix<ncols-1 && newiy<nrows-1) clustering_queue.push((newiy+1) + nrows * (newix+1));
+                clustering_queue.push(ichannel);
+                vector<int> *current_cluster = NULL;
+                while (!clustering_queue.empty()) {
+                    int newhit = clustering_queue.front();
+                    clustering_queue.pop();
+                    if (coreEVec->at(newhit) > hit_threshold && !is_clustered[newhit]) { //if the hit is above threshold and has not been clustered
+                        if (!current_cluster) {
+                            current_cluster = new vector<int>;
+                            clusterVector.push_back(current_cluster);
                         }
-                    }
-                    if (current_cluster) {
-                        if (current_cluster->size()>maxClusterSize) maxClusterSize = current_cluster->size();
-                        //printf("cluster size %d\n",current_cluster->size());
+                        current_cluster->push_back(newhit);
+                        is_clustered[newhit] = true;
+
+                        int newix = newhit/nrows;
+                        int newiy = newhit%nrows;
+
+                        // enqueue all the neighbors
+                        if (newix>0) clustering_queue.push(newiy + nrows * (newix-1));
+                        if (newix<ncols-1) clustering_queue.push(newiy + nrows * (newix+1));
+                        if (newiy>0) clustering_queue.push((newiy-1) + nrows * newix);
+                        if (newiy<nrows-1) clustering_queue.push((newiy+1) + nrows * newix);
+                        if (newix>0 && newiy>0) clustering_queue.push((newiy-1) + nrows * (newix-1));
+                        if (newix>0 && newiy<nrows-1) clustering_queue.push((newiy+1) + nrows * (newix-1));
+                        if (newix<ncols-1 && newiy>0) clustering_queue.push((newiy-1) + nrows * (newix+1));
+                        if (newix<ncols-1 && newiy<nrows-1) clustering_queue.push((newiy+1) + nrows * (newix+1));
                     }
                 }
+                if (current_cluster) {
+                    if (current_cluster->size()>maxClusterSize) maxClusterSize = current_cluster->size();
+                    //printf("cluster size %d\n",current_cluster->size());
+                }
             }
-            if (nHits >= nhits_threshold && maxClusterSize>=clustersize_threshold){
+            if (coreETot > etot_threshold && nHits >= nhits_threshold && maxClusterSize >= clustersize_threshold){
                 sprintf(title,"hit map, total energy %f MeV, %d hits above %f MeV threshold, %ld clusters (largest has %d hits)",coreETot,nHits,hit_threshold,clusterVector.size(),maxClusterSize);
                 hist_coreE->SetTitle(title);
                 hist_coreE->SetMaximum(2.0);
